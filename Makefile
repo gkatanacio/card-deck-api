@@ -24,14 +24,14 @@ build: .env
 startDB: .env
 	docker-compose up -d postgres
 
+.PHONY: stop
+stop: .env
+	docker-compose down
+
 .PHONY: quickStart
 quickStart: .env
 	$(MAKE) startDB
 	docker-compose up --build app
-
-.PHONY: stop
-stop: .env
-	docker-compose down
 
 .PHONY: fmt
 fmt: .env
