@@ -3,8 +3,6 @@ package deck
 import (
 	"errors"
 	"fmt"
-	"math/rand"
-	"time"
 )
 
 type suit struct {
@@ -107,11 +105,4 @@ func standardDeckCards() CardList {
 	}
 
 	return cards
-}
-
-func shuffleCards(cards CardList) {
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(cards), func(i, j int) {
-		cards[i], cards[j] = cards[j], cards[i]
-	})
 }

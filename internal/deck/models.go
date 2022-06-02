@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+	"math/rand"
 	"time"
 
 	"github.com/google/uuid"
@@ -30,6 +31,13 @@ func (cl *CardList) Scan(value interface{}) error {
 	}
 
 	return json.Unmarshal(b, &cl)
+}
+
+func (cl CardList) Shuffle() {
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(cl), func(i, j int) {
+		cl[i], cl[j] = cl[j], cl[i]
+	})
 }
 
 type Card struct {

@@ -40,7 +40,7 @@ func (s *Service) CreateDeck(shuffle bool, cardCodes []string) (*Deck, error) {
 	}
 
 	if shuffle {
-		shuffleCards(cards)
+		cards.Shuffle()
 	}
 
 	deck := &Deck{
