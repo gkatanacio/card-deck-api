@@ -77,9 +77,9 @@ func buildCards(codes []string) (CardList, error) {
 
 		lastIndex := len(chars) - 1
 
-		valueCode := chars[:lastIndex]
+		valueCode := string(chars[:lastIndex])
 
-		v, exists := values[string(valueCode)]
+		v, exists := values[valueCode]
 		if !exists {
 			return nil, errors.New(fmt.Sprintf("invalid value for card code: %s", c))
 		}
