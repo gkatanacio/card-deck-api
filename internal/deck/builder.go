@@ -73,16 +73,18 @@ func buildCards(codes []string) (CardList, error) {
 	var cards CardList
 
 	for _, c := range codes {
-		lastIndex := len(c) - 1
+		chars := []rune(c)
 
-		valueCode := c[:lastIndex]
+		lastIndex := len(chars) - 1
 
-		v, exists := values[valueCode]
+		valueCode := chars[:lastIndex]
+
+		v, exists := values[string(valueCode)]
 		if !exists {
 			return nil, errors.New(fmt.Sprintf("invalid value for card code: %s", c))
 		}
 
-		suitCode := rune(c[lastIndex])
+		suitCode := chars[lastIndex]
 
 		s, exists := suits[suitCode]
 		if !exists {
