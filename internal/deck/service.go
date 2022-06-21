@@ -26,15 +26,14 @@ func NewService(repo Repository) *Service {
 // An optional cardCodes parameter can be passed to create a Deck only with specific Cards.
 // If no cardCodes are provided, a standard 52-card Deck is created.
 func (s *Service) CreateDeck(shuffle bool, cardCodes []string) (*Deck, error) {
-	id := uuid.New()
-
 	var cards CardList
+	var err error
+
 	if len(cardCodes) > 0 {
-		cl, err := buildCards(cardCodes)
+		cards, err = buildCards(cardCodes)
 		if err != nil {
 			return nil, errs.NewBadRequest(err.Error())
 		}
-		cards = cl
 	} else {
 		cards = standardDeckCards()
 	}
@@ -42,6 +41,8 @@ func (s *Service) CreateDeck(shuffle bool, cardCodes []string) (*Deck, error) {
 	if shuffle {
 		cards.Shuffle()
 	}
+
+	id := uuid.New()
 
 	deck := &Deck{
 		Id:       &id,
