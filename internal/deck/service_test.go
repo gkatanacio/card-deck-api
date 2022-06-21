@@ -13,7 +13,7 @@ import (
 
 func Test_Service_CreateDeck_NoCardCodes(t *testing.T) {
 	// given
-	repositoryMock := &mocks.Repository{}
+	repositoryMock := mocks.NewRepository(t)
 	repositoryMock.On("CreateDeck", mock.AnythingOfType("*deck.Deck")).Return(nil)
 
 	service := deck.NewService(repositoryMock)
@@ -27,13 +27,11 @@ func Test_Service_CreateDeck_NoCardCodes(t *testing.T) {
 	assert.NotEqual(t, uuid.Nil, *created.Id)
 	assert.False(t, *created.Shuffled)
 	assert.Equal(t, 52, *created.Remaining)
-
-	repositoryMock.AssertExpectations(t)
 }
 
 func Test_Service_CreateDeck_WithCardCodes(t *testing.T) {
 	// given
-	repositoryMock := &mocks.Repository{}
+	repositoryMock := mocks.NewRepository(t)
 	repositoryMock.On("CreateDeck", mock.AnythingOfType("*deck.Deck")).Return(nil)
 
 	service := deck.NewService(repositoryMock)
@@ -47,8 +45,6 @@ func Test_Service_CreateDeck_WithCardCodes(t *testing.T) {
 	assert.NotEqual(t, uuid.Nil, *created.Id)
 	assert.False(t, *created.Shuffled)
 	assert.Equal(t, 3, *created.Remaining)
-
-	repositoryMock.AssertExpectations(t)
 }
 
 func Test_Service_CreateDeck_InvalidCardCodes(t *testing.T) {
@@ -80,7 +76,7 @@ func Test_Service_GetDeck_ReturnsDeck(t *testing.T) {
 		},
 	}
 
-	repositoryMock := &mocks.Repository{}
+	repositoryMock := mocks.NewRepository(t)
 	repositoryMock.On("GetDeckById", id).Return(&deck.Deck{
 		Id:       &id,
 		Shuffled: &shuffled,
@@ -99,15 +95,13 @@ func Test_Service_GetDeck_ReturnsDeck(t *testing.T) {
 	assert.Equal(t, shuffled, *fetched.Shuffled)
 	assert.Equal(t, len(cards), *fetched.Remaining)
 	assert.ElementsMatch(t, cards, fetched.Cards)
-
-	repositoryMock.AssertExpectations(t)
 }
 
 func Test_Service_GetDeck_NotFound(t *testing.T) {
 	// given
 	id := uuid.New()
 
-	repositoryMock := &mocks.Repository{}
+	repositoryMock := mocks.NewRepository(t)
 	repositoryMock.On("GetDeckById", id).Return(nil, errs.NewNotFound(""))
 
 	service := deck.NewService(repositoryMock)
@@ -118,8 +112,6 @@ func Test_Service_GetDeck_NotFound(t *testing.T) {
 	// then
 	assert.Error(t, err)
 	assert.IsType(t, &errs.NotFound{}, err)
-
-	repositoryMock.AssertExpectations(t)
 }
 
 func Test_Service_DrawCards_ReturnsDrawnCards(t *testing.T) {
@@ -144,7 +136,7 @@ func Test_Service_DrawCards_ReturnsDrawnCards(t *testing.T) {
 		},
 	}
 
-	repositoryMock := &mocks.Repository{}
+	repositoryMock := mocks.NewRepository(t)
 	repositoryMock.On("GetDeckById", id).Return(&deck.Deck{
 		Id:    &id,
 		Cards: cards,
@@ -161,8 +153,6 @@ func Test_Service_DrawCards_ReturnsDrawnCards(t *testing.T) {
 	assert.NotNil(t, drawn)
 	assert.Len(t, drawn.Cards, count)
 	assert.ElementsMatch(t, cards[:count], drawn.Cards)
-
-	repositoryMock.AssertExpectations(t)
 }
 
 func Test_Service_DrawCards_NotEnoughCards(t *testing.T) {
@@ -182,7 +172,7 @@ func Test_Service_DrawCards_NotEnoughCards(t *testing.T) {
 		},
 	}
 
-	repositoryMock := &mocks.Repository{}
+	repositoryMock := mocks.NewRepository(t)
 	repositoryMock.On("GetDeckById", id).Return(&deck.Deck{
 		Id:    &id,
 		Cards: cards,
@@ -196,6 +186,4 @@ func Test_Service_DrawCards_NotEnoughCards(t *testing.T) {
 	// then
 	assert.Error(t, err)
 	assert.IsType(t, &errs.BadRequest{}, err)
-
-	repositoryMock.AssertExpectations(t)
 }

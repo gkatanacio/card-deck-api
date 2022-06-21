@@ -18,7 +18,7 @@ import (
 
 func Test_CreateDeckHandler_Handle_NoQueryParams(t *testing.T) {
 	// given
-	deckServiceMock := &mocks.Servicer{}
+	deckServiceMock := mocks.NewServicer(t)
 	deckServiceMock.On("CreateDeck", false, mock.AnythingOfType("[]string")).Return(&deck.Deck{}, nil)
 
 	handler := handler.NewCreateDeckHandler(deckServiceMock)
@@ -32,13 +32,11 @@ func Test_CreateDeckHandler_Handle_NoQueryParams(t *testing.T) {
 
 	// then
 	assert.Equal(t, http.StatusCreated, rr.Code)
-
-	deckServiceMock.AssertExpectations(t)
 }
 
 func Test_CreateDeckHandler_Handle_WithQueryParams(t *testing.T) {
 	// given
-	deckServiceMock := &mocks.Servicer{}
+	deckServiceMock := mocks.NewServicer(t)
 	deckServiceMock.On("CreateDeck", true, []string{"AC", "2C", "KH"}).Return(&deck.Deck{}, nil)
 
 	handler := handler.NewCreateDeckHandler(deckServiceMock)
@@ -52,8 +50,6 @@ func Test_CreateDeckHandler_Handle_WithQueryParams(t *testing.T) {
 
 	// then
 	assert.Equal(t, http.StatusCreated, rr.Code)
-
-	deckServiceMock.AssertExpectations(t)
 }
 
 func Test_CreateDeckHandler_Handle_InvalidShuffle(t *testing.T) {
@@ -75,7 +71,7 @@ func Test_GetDeckHandler_Handle_ReturnsDeck(t *testing.T) {
 	// given
 	id := uuid.New()
 
-	deckServiceMock := &mocks.Servicer{}
+	deckServiceMock := mocks.NewServicer(t)
 	deckServiceMock.On("GetDeck", id).Return(&deck.Deck{}, nil)
 
 	handler := handler.NewGetDeckHandler(deckServiceMock)
@@ -90,15 +86,13 @@ func Test_GetDeckHandler_Handle_ReturnsDeck(t *testing.T) {
 
 	// then
 	assert.Equal(t, http.StatusOK, rr.Code)
-
-	deckServiceMock.AssertExpectations(t)
 }
 
 func Test_GetDeckHandler_Handle_NotFound(t *testing.T) {
 	// given
 	id := uuid.New()
 
-	deckServiceMock := &mocks.Servicer{}
+	deckServiceMock := mocks.NewServicer(t)
 	deckServiceMock.On("GetDeck", id).Return(nil, errs.NewNotFound(""))
 
 	handler := handler.NewGetDeckHandler(deckServiceMock)
@@ -113,8 +107,6 @@ func Test_GetDeckHandler_Handle_NotFound(t *testing.T) {
 
 	// then
 	assert.Equal(t, http.StatusNotFound, rr.Code)
-
-	deckServiceMock.AssertExpectations(t)
 }
 
 func Test_GetDeckHandler_Handle_InvalidId(t *testing.T) {
@@ -139,7 +131,7 @@ func Test_DeleteCardsHandler_Handle_NoCount(t *testing.T) {
 	// given
 	id := uuid.New()
 
-	deckServiceMock := &mocks.Servicer{}
+	deckServiceMock := mocks.NewServicer(t)
 	deckServiceMock.On("DrawCards", id, 1).Return(&deck.Deck{}, nil)
 
 	handler := handler.NewDeleteCardsHandler(deckServiceMock)
@@ -154,8 +146,6 @@ func Test_DeleteCardsHandler_Handle_NoCount(t *testing.T) {
 
 	// then
 	assert.Equal(t, http.StatusOK, rr.Code)
-
-	deckServiceMock.AssertExpectations(t)
 }
 
 func Test_DeleteCardsHandler_Handle_WithCount(t *testing.T) {
@@ -163,7 +153,7 @@ func Test_DeleteCardsHandler_Handle_WithCount(t *testing.T) {
 	id := uuid.New()
 	count := 5
 
-	deckServiceMock := &mocks.Servicer{}
+	deckServiceMock := mocks.NewServicer(t)
 	deckServiceMock.On("DrawCards", id, count).Return(&deck.Deck{}, nil)
 
 	handler := handler.NewDeleteCardsHandler(deckServiceMock)
@@ -178,8 +168,6 @@ func Test_DeleteCardsHandler_Handle_WithCount(t *testing.T) {
 
 	// then
 	assert.Equal(t, http.StatusOK, rr.Code)
-
-	deckServiceMock.AssertExpectations(t)
 }
 
 func Test_DeleteCardsHandler_Handle_InvalidId(t *testing.T) {
